@@ -6,9 +6,10 @@ type Props = {
   quantity: number;
   onEdit: () => void;
   onDelete: () => void;
+  onDuplicate: () => void;
 };
 
-const ItemRow: React.FC<Props> = ({ name, quantity, onDelete, onEdit }) => {
+const ItemRow: React.FC<Props> = ({ name, quantity, onDelete, onEdit, onDuplicate }) => {
   return (
     <View style={styles.container}>
       {/* Left side: Item info */}
@@ -36,6 +37,15 @@ const ItemRow: React.FC<Props> = ({ name, quantity, onDelete, onEdit }) => {
           style={styles.iconButton}
         >
           <MaterialIcons name="delete" size={24} color="#D32F2F" />
+        </TouchableOpacity>
+
+                <TouchableOpacity
+          onPress={onDuplicate}
+          accessibilityRole="button"
+          accessibilityLabel={`Duplicate ${name}`}
+          style={styles.iconButton}
+        >
+          <MaterialIcons name="Content Copy" size={24} color="#ffc400" />
         </TouchableOpacity>
       </View>
     </View>

@@ -17,6 +17,7 @@ import {
   deleteItem,
   updateItem,
 } from "../data/db";
+import { SearchBar } from "react-native-screens";
 
 export default function App() {
   /**
@@ -35,6 +36,7 @@ export default function App() {
    * They're stored as strings because TextInput always works with strings.
    */
   const [name, setName] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [editingId, setEditingId] = useState<number | null>(null);
 
@@ -161,6 +163,34 @@ export default function App() {
    * @param id - The unique identifier of the item to delete
    * @returns void
    */
+  const sortItems = async () => {
+    try {
+      const sortedItems = await db.getAllAsync<Item>(
+        "SELECT * FROM items ORDER BY name ASC",
+      );
+      setItems(sortedItems);
+    } catch (err) {
+      console.log("error");
+    }
+  };
+  const searchF = async (val: string) => {
+    setSearch(val);
+    try {
+      if (val.trim() === "") {
+        await loadItems();
+        return;
+      }
+
+      const searchResults = await db.getAllAsync<Item>(
+        "SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC",
+        `%${val.trim()}%`,
+      );
+      setItems(searchResults);
+    } catch (err) {
+      console.log("error");
+    }
+  };
+  const confirmDuplicate = (id: number) => {};
   const confirmDelete = (id: number) => {
     Alert.alert("Delete item?", "This cannot be undone.", [
       { text: "Cancel", style: "cancel" },
@@ -208,7 +238,12 @@ export default function App() {
         onChangeText={setQuantity}
         keyboardType="numeric"
       />
-
+      <TextInput
+        style={styles.input}
+        placeholder="Search by Name"
+        value={search}
+        onChangeText={searchF}
+      />
       {/* 
         Save Button
         Triggers the saveOrUpdate function which validates and saves to database.
@@ -217,6 +252,7 @@ export default function App() {
         title={editingId === null ? "Save Item" : "Update Item"}
         onPress={saveOrUpdate}
       />
+      <Button title="Sort Items" onPress={sortItems} />
       <FlatList
         style={styles.list}
         data={items}
@@ -237,6 +273,7 @@ export default function App() {
             quantity={item.quantity}
             onEdit={() => startEdit(item)}
             onDelete={() => confirmDelete(item.id)}
+            onDuplicate={() => confirmDuplicate(item.id)}
           />
         )}
         ListEmptyComponent={
