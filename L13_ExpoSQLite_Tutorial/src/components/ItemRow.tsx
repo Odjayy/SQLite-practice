@@ -9,7 +9,13 @@ type Props = {
   onDuplicate: () => void;
 };
 
-const ItemRow: React.FC<Props> = ({ name, quantity, onDelete, onEdit, onDuplicate }) => {
+const ItemRow: React.FC<Props> = ({
+  name,
+  quantity,
+  onDelete,
+  onEdit,
+  onDuplicate,
+}) => {
   return (
     <View style={styles.container}>
       {/* Left side: Item info */}
@@ -39,13 +45,13 @@ const ItemRow: React.FC<Props> = ({ name, quantity, onDelete, onEdit, onDuplicat
           <MaterialIcons name="delete" size={24} color="#D32F2F" />
         </TouchableOpacity>
 
-                <TouchableOpacity
+        <TouchableOpacity
           onPress={onDuplicate}
           accessibilityRole="button"
           accessibilityLabel={`Duplicate ${name}`}
           style={styles.iconButton}
         >
-          <MaterialIcons name="Content Copy" size={24} color="#ffc400" />
+          <MaterialIcons name="delete" size={24} color="#ffc400" />
         </TouchableOpacity>
       </View>
     </View>
@@ -65,7 +71,7 @@ const styles = StyleSheet.create({
   },
   info: { flexShrink: 1 },
   name: { fontSize: 16, fontWeight: "600" },
-  qty: { fontSize: 14, color: "#666", marginTop: 2 },
+  qty: { fontSize: 14, color: "#030303", marginTop: 2 },
   actions: { flexDirection: "row", gap: 8 },
   iconButton: {
     padding: 4,

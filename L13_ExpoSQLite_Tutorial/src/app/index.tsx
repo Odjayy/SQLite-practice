@@ -173,6 +173,36 @@ export default function App() {
       console.log("error");
     }
   };
+  const sortItems2 = async () => {
+    try {
+      const sortedItems = await db.getAllAsync<Item>(
+        "SELECT * FROM items ORDER BY name DESC",
+      );
+      setItems(sortedItems);
+    } catch (err) {
+      console.log("error");
+    }
+  };
+  const sortItems3 = async () => {
+    try {
+      const sortedItems = await db.getAllAsync<Item>(
+        "SELECT * FROM items ORDER BY quantity ASC",
+      );
+      setItems(sortedItems);
+    } catch (err) {
+      console.log("error");
+    }
+  };
+  const sortItems4 = async () => {
+    try {
+      const sortedItems = await db.getAllAsync<Item>(
+        "SELECT * FROM items ORDER BY quantity DESC",
+      );
+      setItems(sortedItems);
+    } catch (err) {
+      console.log("error");
+    }
+  };
   const searchF = async (val: string) => {
     setSearch(val);
     try {
@@ -190,7 +220,11 @@ export default function App() {
       console.log("error");
     }
   };
-  const confirmDuplicate = (id: number) => {};
+  const confirmDuplicate = async (Qty: number, Name: string) => {
+    await insertItem(db, Name, Qty);
+    const updatedItems = await fetchItems(db);
+    setItems(updatedItems);
+  };
   const confirmDelete = (id: number) => {
     Alert.alert("Delete item?", "This cannot be undone.", [
       { text: "Cancel", style: "cancel" },
@@ -252,7 +286,10 @@ export default function App() {
         title={editingId === null ? "Save Item" : "Update Item"}
         onPress={saveOrUpdate}
       />
-      <Button title="Sort Items" onPress={sortItems} />
+      <Button title="Sort Items A-Z" onPress={sortItems} />
+      <Button title="Sort Items Z-A" onPress={sortItems2} />
+      <Button title="Sort Items low-high" onPress={sortItems3} />
+      <Button title="Sort Items high-low" onPress={sortItems4} />
       <FlatList
         style={styles.list}
         data={items}
@@ -273,7 +310,7 @@ export default function App() {
             quantity={item.quantity}
             onEdit={() => startEdit(item)}
             onDelete={() => confirmDelete(item.id)}
-            onDuplicate={() => confirmDuplicate(item.id)}
+            onDuplicate={() => confirmDuplicate(item.id, item.name)}
           />
         )}
         ListEmptyComponent={
